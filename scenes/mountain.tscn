@@ -1,27 +1,52 @@
-[gd_scene load_steps=7 format=3 uid="uid://cm107g12a0xjj"]
+[gd_scene load_steps=13 format=3 uid="uid://f34w2ggnrdr4"]
 
 [ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="1_6kjtp"]
+[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="2_4ec4r"]
 
-[sub_resource type="Gradient" id="Gradient_lcdfb"]
-offsets = PackedFloat32Array(0.291262, 0.61165, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.203883, 0.203883, 0.203883, 1, 1, 1, 1, 1)
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jxaet"]
+frequency = 0.0085
+fractal_octaves = 1
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_pwre3"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f5cr8"]
+noise = SubResource("FastNoiseLite_jxaet")
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1pssp"]
-color_ramp = SubResource("Gradient_lcdfb")
-noise = SubResource("FastNoiseLite_pwre3")
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vcih5"]
+frequency = 0.0085
+fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1087o"]
+as_normal_map = true
+noise = SubResource("FastNoiseLite_vcih5")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fu0do"]
+noise_type = 3
+frequency = 0.007
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oiy2s"]
+noise = SubResource("FastNoiseLite_fu0do")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0le2x"]
+noise_type = 3
+frequency = 0.8003
+metadata/_preview_in_3d_space_ = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qm0uf"]
+noise = SubResource("FastNoiseLite_0le2x")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4dtuo"]
 render_priority = 0
 shader = ExtResource("1_6kjtp")
-shader_parameter/noise = SubResource("NoiseTexture2D_1pssp")
+shader_parameter/scale = 1.0
+shader_parameter/noise1 = SubResource("NoiseTexture2D_f5cr8")
+shader_parameter/noise1Normal = SubResource("NoiseTexture2D_1087o")
+shader_parameter/noise2 = SubResource("NoiseTexture2D_oiy2s")
+shader_parameter/noise3 = SubResource("NoiseTexture2D_qm0uf")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_2tsj7"]
 material = SubResource("ShaderMaterial_4dtuo")
-size = Vector2(4, 4)
-subdivide_width = 32
-subdivide_depth = 32
+size = Vector2(16, 16)
+subdivide_width = 128
+subdivide_depth = 128
 
 [node name="Node3D" type="Node3D"]
 
@@ -29,4 +54,10 @@ subdivide_depth = 32
 mesh = SubResource("PlaneMesh_2tsj7")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.96462, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.52218, 2.70895, 0.380958)
+light_energy = 1.762
+light_size = 98.115
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.907418, 0.420228, 0, -0.420228, 0.907418, 0.130093, 5.08636, 4.20686)
+script = ExtResource("2_4ec4r")
