@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=3 uid="uid://cm107g12a0xjj"]
+
+[ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="1_6kjtp"]
+
+[sub_resource type="Gradient" id="Gradient_lcdfb"]
+offsets = PackedFloat32Array(0.291262, 0.61165, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.203883, 0.203883, 0.203883, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_pwre3"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1pssp"]
+color_ramp = SubResource("Gradient_lcdfb")
+noise = SubResource("FastNoiseLite_pwre3")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4dtuo"]
+render_priority = 0
+shader = ExtResource("1_6kjtp")
+shader_parameter/noise = SubResource("NoiseTexture2D_1pssp")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_2tsj7"]
+material = SubResource("ShaderMaterial_4dtuo")
+size = Vector2(4, 4)
+subdivide_width = 32
+subdivide_depth = 32
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_2tsj7")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.96462, 0)
