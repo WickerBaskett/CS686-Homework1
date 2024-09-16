@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="1_6kjtp"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="2_4ec4r"]
-[ext_resource type="Script" path="res://scripts/omni_light_3d.gd" id="2_woigl"]
+[ext_resource type="Script" path="res://scripts/sun.gd" id="2_cs0hd"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_jxaet"]
 frequency = 0.0068
@@ -31,6 +31,7 @@ noise_type = 3
 frequency = 0.0432
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_3hldj"]
+as_normal_map = true
 noise = SubResource("FastNoiseLite_xbjlv")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0le2x"]
@@ -47,12 +48,12 @@ noise_type = 4
 frequency = 0.019
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kerrn"]
+as_normal_map = true
 noise = SubResource("FastNoiseLite_6vl5l")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4dtuo"]
 render_priority = 0
 shader = ExtResource("1_6kjtp")
-shader_parameter/scale = 1.0
 shader_parameter/noise1 = SubResource("NoiseTexture2D_f5cr8")
 shader_parameter/noise1Normal = SubResource("NoiseTexture2D_1087o")
 shader_parameter/noise2 = SubResource("NoiseTexture2D_oiy2s")
@@ -72,13 +73,13 @@ subdivide_depth = 128
 mesh = SubResource("PlaneMesh_2tsj7")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.52218, 2.70895, 0.380958)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.52218, 4.7758, 0.380958)
 light_color = Color(0.982158, 0.995009, 0.98866, 1)
 light_energy = 1.402
 light_size = 23.705
-omni_range = 5.984
-script = ExtResource("2_woigl")
+omni_range = 6.832
+script = ExtResource("2_cs0hd")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.810021, 0.586401, 0, -0.586401, 0.810021, 0.130093, 6.30153, 9.13931)
+transform = Transform3D(1, 0, 0, 0, 0.810021, 0.586401, 0, -0.586401, 0.810021, 0.130093, 10.6283, 9.80425)
 script = ExtResource("2_4ec4r")
