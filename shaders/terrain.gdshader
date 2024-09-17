@@ -1,11 +1,8 @@
 shader_type spatial;
 
 uniform sampler2D noise1;
-uniform sampler2D noise1Normal;
 uniform sampler2D noise2;
-uniform sampler2D noise2Normal;
 uniform sampler2D noise3;
-uniform sampler2D noise3Normal;
 
 // Offset of points used to calculate the Normal Vector
 const float pos_offset = 1.0;
@@ -14,7 +11,7 @@ varying vec2 tex_position;
 
 // Calculates the height of a given position based on 3 layers of fractal noise
 float get_height(vec2 pos) {
-	float layer1 = pow(texture(noise1, pos).r, 4.0) * (1.0 * 4.0);
+	float layer1 = texture(noise1, pos).r * (1.0 * 4.0);
 	float layer2 = texture(noise2, pos).r * (1.0 / 2.0);
 	float layer3 = texture(noise3, pos).r * (1.0 / 4.0);
 	
@@ -43,7 +40,7 @@ void vertex() {
 }
 
 void fragment() {
-	
+
 	}
 
 //void light() {

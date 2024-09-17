@@ -8,10 +8,11 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-		pass
-
-func _input(event):
+		var mouse_velocity = Input.get_last_mouse_velocity().normalized()
+		#transform.basis.x += transform.basis.z * mouse_velocity.x / 50
+		
+		#print(mouse_velocity)
+		
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		#transform.basis.x += transform.basis.z * (event.relative.x / 500)
-		transform.basis.y += transform.basis.z * (-event.relative.y /500)
-		transform.basis = transform.basis.orthonormalized()
+		transform.basis.y += transform.basis.z * -event.relative.y / 500
