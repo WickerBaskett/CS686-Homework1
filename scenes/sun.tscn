@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://drn7ouohlx3ib"]
+
+[ext_resource type="Script" path="res://scripts/sun.gd" id="1_saix2"]
+
+[node name="OmniLight3D" type="OmniLight3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.52218, 4.7758, 0.380958)
+light_color = Color(0.982158, 0.995009, 0.98866, 1)
+light_energy = 1.402
+light_size = 23.705
+omni_range = 6.832
+script = ExtResource("1_saix2")
+radius = 2.5
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]

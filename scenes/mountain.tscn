@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://f34w2ggnrdr4"]
+[gd_scene load_steps=16 format=3 uid="uid://f34w2ggnrdr4"]
 
 [ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="1_6kjtp"]
-[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="2_4ec4r"]
-[ext_resource type="Script" path="res://scripts/sun.gd" id="2_cs0hd"]
+[ext_resource type="Shader" path="res://shaders/hatching.gdshader" id="3_war5u"]
+[ext_resource type="Script" path="res://scripts/free_cam.gd" id="3_y5k6m"]
+[ext_resource type="PackedScene" uid="uid://drn7ouohlx3ib" path="res://scenes/sun.tscn" id="4_pt8eh"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_jxaet"]
 frequency = 0.0068
@@ -30,26 +31,29 @@ noise = SubResource("FastNoiseLite_0le2x")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4dtuo"]
 render_priority = 0
 shader = ExtResource("1_6kjtp")
+shader_parameter/num_tones = 5
 shader_parameter/noise1 = SubResource("NoiseTexture2D_f5cr8")
 shader_parameter/noise2 = SubResource("NoiseTexture2D_oiy2s")
 shader_parameter/noise3 = SubResource("NoiseTexture2D_qm0uf")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_2tsj7"]
 material = SubResource("ShaderMaterial_4dtuo")
+custom_aabb = AABB(-50, -50, -50, 100, 100, 100)
 size = Vector2(16, 16)
-subdivide_width = 128
-subdivide_depth = 128
+subdivide_width = 256
+subdivide_depth = 256
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bwhmt"]
-albedo_color = Color(0.694188, 0.405267, 0.107884, 1)
-emission_enabled = true
-emission = Color(0.872419, 0.56432, 0.540048, 1)
-emission_energy_multiplier = 5.04
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c8miw"]
+resource_local_to_scene = true
+shader = ExtResource("3_war5u")
+shader_parameter/num_tones = 50
 
-[sub_resource type="SphereMesh" id="SphereMesh_ka58k"]
-material = SubResource("StandardMaterial3D_bwhmt")
-radius = 0.25
-height = 0.5
+[sub_resource type="QuadMesh" id="QuadMesh_afiol"]
+material = SubResource("ShaderMaterial_c8miw")
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_wadg8"]
 
 [node name="Node3D" type="Node3D"]
 
@@ -57,18 +61,23 @@ height = 0.5
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.330482, 0.24614, 0.159104)
 mesh = SubResource("PlaneMesh_2tsj7")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.52218, 4.7758, 0.380958)
-light_color = Color(0.982158, 0.995009, 0.98866, 1)
-light_energy = 1.402
-light_size = 23.705
-omni_range = 6.832
-script = ExtResource("2_cs0hd")
-radius = 2.5
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="OmniLight3D"]
-mesh = SubResource("SphereMesh_ka58k")
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.810021, 0.586401, 0, -0.586401, 0.810021, 0.130093, 10.6283, 9.80425)
-script = ExtResource("2_4ec4r")
+script = ExtResource("3_y5k6m")
+move_speed = 20.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(0.0911193, 0, -0.99584, 0, 1, 0, 0.99584, 0, 0.0911193, -0.169409, -0.798712, -1.85146)
+mesh = SubResource("QuadMesh_afiol")
+skeleton = NodePath("../..")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("SphereShape3D_wadg8")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.622902, 0.7199, 0.306164, 0.197079, -0.523147, 0.829142, 0.757068, -0.456136, -0.467747, 0, 7.03142, 0)
+visible = false
+
+[node name="OmniLight3D" parent="." instance=ExtResource("4_pt8eh")]

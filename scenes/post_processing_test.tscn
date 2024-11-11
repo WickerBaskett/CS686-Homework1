@@ -1,0 +1,80 @@
+[gd_scene load_steps=11 format=3 uid="uid://dtig42sxgmhd"]
+
+[ext_resource type="Script" path="res://scripts/free_cam.gd" id="1_pcxqr"]
+[ext_resource type="Shader" path="res://shaders/edge_detection.gdshader" id="2_mprfx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nwde2"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_mprfx")
+
+[sub_resource type="QuadMesh" id="QuadMesh_jkgj5"]
+material = SubResource("ShaderMaterial_nwde2")
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i31jr"]
+albedo_color = Color(0, 1, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_g58eq"]
+material = SubResource("StandardMaterial3D_i31jr")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8r6qe"]
+size = Vector2(200, 200)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5k0d2"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_l58ne"]
+material = SubResource("StandardMaterial3D_5k0d2")
+
+[sub_resource type="TorusMesh" id="TorusMesh_4hn8t"]
+
+[node name="PostProcessing" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.999281, 0, 0.0379169, 0, 1, 0, -0.0379169, 0, -0.999281, -0.239136, 0.798712, -6.09898)
+script = ExtResource("1_pcxqr")
+move_speed = 5.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(0.0911193, 0, -0.99584, 0, 1, 0, 0.99584, 0, 0.0911193, -0.169409, -0.798712, -1.85146)
+mesh = SubResource("QuadMesh_jkgj5")
+skeleton = NodePath("../..")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.0530302, -0.746081, 0.663741, -0.0594195, 0.665856, 0.743711, -0.996824, -3.71624e-09, -0.0796422, 3.01466, 1.32626, 0.252999)
+light_energy = 5.419
+shadow_enabled = true
+
+[node name="DemoScene" type="Node" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DemoScene"]
+transform = Transform3D(-0.17453, 0.579509, 0.796058, 0.53645, 0.733909, -0.416653, -0.825688, 0.354327, -0.438966, -1.82743, 1.3635, 0)
+mesh = SubResource("BoxMesh_g58eq")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="DemoScene"]
+transform = Transform3D(-0.81115, 0.312124, -0.494586, 0.511848, -0.0302381, -0.858544, -0.282927, -0.94956, -0.135232, 0.536345, 1.3635, 0)
+mesh = SubResource("BoxMesh_g58eq")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="DemoScene"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.20632, -1.12988, 0.109273)
+extra_cull_margin = 16384.0
+mesh = SubResource("PlaneMesh_8r6qe")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="DemoScene"]
+transform = Transform3D(0.779287, -0.66368, -0.267246, 0.80502, 0.698397, 0, 0.229933, -0.195823, 0.905748, -1.22749, 2.83773, 0)
+mesh = SubResource("CapsuleMesh_l58ne")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="DemoScene"]
+transform = Transform3D(0.0275623, -0.0234733, 0.943809, 0.80502, 0.698397, -7.96456e-09, -0.812033, 0.691568, 0.032035, 0.971116, 2.70862, 1.07965)
+mesh = SubResource("CapsuleMesh_l58ne")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="DemoScene"]
+transform = Transform3D(0.470717, 0.268122, 0.840557, -0.494943, 0.868925, 0, -0.730381, -0.416028, 0.541723, -3.90415, 2.77732, 0)
+mesh = SubResource("TorusMesh_4hn8t")
