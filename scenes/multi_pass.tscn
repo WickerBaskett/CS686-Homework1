@@ -1,11 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://onpbxy0uex6e"]
+[gd_scene load_steps=17 format=3 uid="uid://onpbxy0uex6e"]
 
 [ext_resource type="Script" path="res://scripts/free_cam.gd" id="2_c6hql"]
-[ext_resource type="Shader" path="res://shaders/multipass/pass_1.gdshader" id="2_u6sg5"]
-[ext_resource type="Shader" path="res://shaders/multipass/pass_2.gdshader" id="3_qaxki"]
-[ext_resource type="Shader" path="res://shaders/multipass/pass_3.gdshader" id="4_k6ll4"]
+[ext_resource type="Shader" path="res://shaders/post_processing/multipass/pass_1.gdshader" id="2_u6sg5"]
+[ext_resource type="Shader" path="res://shaders/post_processing/multipass/pass_2.gdshader" id="3_qaxki"]
+[ext_resource type="Shader" path="res://shaders/post_processing/multipass/pass_3.gdshader" id="4_k6ll4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_awwkh"]
+render_priority = 0
 shader = ExtResource("2_u6sg5")
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_cugdc"]
@@ -38,6 +39,17 @@ albedo_color = Color(0.0962047, 0.0962048, 0.0962047, 1)
 material = SubResource("StandardMaterial3D_im3g1")
 size = Vector2(200, 200)
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_r32s0"]
+viewport_path = NodePath("Camera3D/FirstPass")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eyr3d"]
+resource_local_to_scene = true
+albedo_texture = SubResource("ViewportTexture_r32s0")
+
+[sub_resource type="QuadMesh" id="QuadMesh_55skp"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_eyr3d")
+
 [sub_resource type="BoxMesh" id="BoxMesh_uhxhs"]
 
 [node name="Node3D" type="Node3D"]
@@ -59,6 +71,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="screen_test" type="ColorRect" parent="Camera3D/FirstPass"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
 [node name="SecondPass" type="SubViewport" parent="Camera3D"]
 disable_3d = true
 render_target_update_mode = 4
@@ -72,7 +92,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.737816, 0.21472, -5.90743)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.22277, 0.21472, -5.87098)
+visible = false
 mesh = SubResource("QuadMesh_vjex3")
 
 [node name="World_Objects" type="Node" parent="."]
@@ -81,6 +102,10 @@ mesh = SubResource("QuadMesh_vjex3")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.336293, 0)
 mesh = SubResource("PlaneMesh_mpjdk")
 skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World_Objects/Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.38007, 1.06195, 0)
+mesh = SubResource("QuadMesh_55skp")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="World_Objects"]
 transform = Transform3D(1, 0, 0, 0, 0.850159, 0.526526, 0, -0.526526, 0.850159, 0, 2.52328, -4.06072)

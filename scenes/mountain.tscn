@@ -1,55 +1,37 @@
-[gd_scene load_steps=16 format=3 uid="uid://f34w2ggnrdr4"]
+[gd_scene load_steps=12 format=3 uid="uid://f34w2ggnrdr4"]
 
-[ext_resource type="Shader" path="res://shaders/terrain.gdshader" id="1_6kjtp"]
-[ext_resource type="Shader" path="res://shaders/hatching.gdshader" id="3_war5u"]
+[ext_resource type="Shader" path="res://shaders/terrain_generation/second_terrain.gdshader" id="1_8dbkh"]
+[ext_resource type="Shader" path="res://shaders/post_processing/hatching.gdshader" id="3_war5u"]
 [ext_resource type="Script" path="res://scripts/free_cam.gd" id="3_y5k6m"]
 [ext_resource type="PackedScene" uid="uid://drn7ouohlx3ib" path="res://scenes/sun.tscn" id="4_pt8eh"]
+[ext_resource type="PackedScene" uid="uid://bh5bhrnhou1cn" path="res://scenes/noise_gen.tscn" id="5_jkxt7"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_jxaet"]
-frequency = 0.0068
-fractal_octaves = 1
+[sub_resource type="ViewportTexture" id="ViewportTexture_xcl6k"]
+viewport_path = NodePath("SubViewport")
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f5cr8"]
-noise = SubResource("FastNoiseLite_jxaet")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_fu0do"]
-noise_type = 3
-frequency = 0.0432
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oiy2s"]
-noise = SubResource("FastNoiseLite_fu0do")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_0le2x"]
-noise_type = 4
-frequency = 0.019
-domain_warp_type = 1
-metadata/_preview_in_3d_space_ = true
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_qm0uf"]
-noise = SubResource("FastNoiseLite_0le2x")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4dtuo"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sft1i"]
+resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("1_6kjtp")
-shader_parameter/num_tones = 5
-shader_parameter/noise1 = SubResource("NoiseTexture2D_f5cr8")
-shader_parameter/noise2 = SubResource("NoiseTexture2D_oiy2s")
-shader_parameter/noise3 = SubResource("NoiseTexture2D_qm0uf")
+shader = ExtResource("1_8dbkh")
+shader_parameter/noise = SubResource("ViewportTexture_xcl6k")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_2tsj7"]
-material = SubResource("ShaderMaterial_4dtuo")
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_sft1i")
 custom_aabb = AABB(-50, -50, -50, 100, 100, 100)
 size = Vector2(16, 16)
-subdivide_width = 256
-subdivide_depth = 256
+subdivide_width = 512
+subdivide_depth = 512
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c8miw"]
 resource_local_to_scene = true
+render_priority = 0
 shader = ExtResource("3_war5u")
-shader_parameter/num_tones = 50
+shader_parameter/num_tones = 25
 
 [sub_resource type="QuadMesh" id="QuadMesh_afiol"]
 material = SubResource("ShaderMaterial_c8miw")
+custom_aabb = AABB(0, 0, -500, 1000, 1000, 1000)
 flip_faces = true
 size = Vector2(2, 2)
 
@@ -68,6 +50,7 @@ move_speed = 20.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
 transform = Transform3D(0.0911193, 0, -0.99584, 0, 1, 0, 0.99584, 0, 0.0911193, -0.169409, -0.798712, -1.85146)
+visible = false
 mesh = SubResource("QuadMesh_afiol")
 skeleton = NodePath("../..")
 
@@ -77,7 +60,11 @@ skeleton = NodePath("../..")
 shape = SubResource("SphereShape3D_wadg8")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.622902, 0.7199, 0.306164, 0.197079, -0.523147, 0.829142, 0.757068, -0.456136, -0.467747, 0, 7.03142, 0)
-visible = false
+transform = Transform3D(0.622902, 0.7199, 0.306163, 0.666451, -0.693282, 0.274232, 0.409677, 0.0332224, -0.911625, 0, 7.03142, 0)
 
 [node name="OmniLight3D" parent="." instance=ExtResource("4_pt8eh")]
+visible = false
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Node" parent="SubViewport" instance=ExtResource("5_jkxt7")]

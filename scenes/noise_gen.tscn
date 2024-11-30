@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://bh5bhrnhou1cn"]
+
+[ext_resource type="Shader" path="res://shaders/terrain_generation/noise_gen.gdshader" id="1_t3q65"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ry0kr"]
+shader = ExtResource("1_t3q65")
+
+[node name="Node" type="Node"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_ry0kr")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

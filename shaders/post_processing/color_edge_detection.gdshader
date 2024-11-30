@@ -39,6 +39,7 @@ void fragment() {
 	else {
 		ALBEDO = texelFetch(screen_tex, ivec2(FRAGCOORD.xy), 0).xyz;
 	}
+	//ALBEDO = vec3(val);
 }
 
 //void light() {

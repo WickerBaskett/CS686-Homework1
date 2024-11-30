@@ -21,33 +21,9 @@ float get_height(vec2 pos) {
 }
 
 void vertex() {
-
-
 	// Set the current positions height
 	float height0 = get_height(UV);
 	VERTEX.y = height0;
-
-	/*
-	// Calculate the heights of two nearby points, used to find tangent and bitangent
-	float height1 = get_height(UV - vec2(0, -pos_offset));
-	float height2 = get_height(UV - vec2(-pos_offset, 0));
-
-	// Get two vectors near the current position, double check that the coords are in right
-	//  space
-	vec3 p0 = vec3(VERTEX.x, 			  height0, VERTEX.z);
-	vec3 p1 = vec3(VERTEX.x, 			  height1, VERTEX.z - pos_offset);
-	vec3 p2 = vec3(VERTEX.x - pos_offset, height2, 0.0);
-
-	// Find two vectors in the plane perpendicular to the normal
-	vec3 v1 = p1 - p0;
-	vec3 v2 = p2 - p0;
-
-	// Calculate the normal based on the cross product of two vectors
-	NORMAL = normalize(cross(v1, v2));
-
-	//vec2 pos = VERTEX.xz;
-	//NORMAL = -1.0 * normalize(vec3(height - get_height(pos + vec2(0.1, 0.0)), 0.1, height - get_height(pos + vec2(0.0, 0.1))));
-	*/
 }
 
 void fragment() {

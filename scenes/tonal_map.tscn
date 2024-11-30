@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://ivlbnskfeyvt"]
+
+[ext_resource type="Shader" path="res://shaders/post_processing/tonal_map.gdshader" id="1_fb5hu"]
+[ext_resource type="Texture2D" uid="uid://cjk683kkt4xqj" path="res://assets/hatching_stroke.png" id="2_d3uh3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jn775"]
+shader = ExtResource("1_fb5hu")
+shader_parameter/hatching_stroke = ExtResource("2_d3uh3")
+
+[node name="Node" type="Node"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_jn775")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

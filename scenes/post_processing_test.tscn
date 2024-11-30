@@ -1,12 +1,15 @@
-[gd_scene load_steps=11 format=3 uid="uid://dtig42sxgmhd"]
+[gd_scene load_steps=12 format=3 uid="uid://dtig42sxgmhd"]
 
 [ext_resource type="Script" path="res://scripts/free_cam.gd" id="1_pcxqr"]
-[ext_resource type="Shader" path="res://shaders/edge_detection.gdshader" id="2_mprfx"]
+[ext_resource type="Shader" path="res://shaders/post_processing/hatching.gdshader" id="2_1erct"]
+[ext_resource type="Texture2D" uid="uid://cjk683kkt4xqj" path="res://assets/hatching_stroke.png" id="3_cnw4v"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nwde2"]
 resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("2_mprfx")
+shader = ExtResource("2_1erct")
+shader_parameter/num_tones = 4
+shader_parameter/hatching_stroke = ExtResource("3_cnw4v")
 
 [sub_resource type="QuadMesh" id="QuadMesh_jkgj5"]
 material = SubResource("ShaderMaterial_nwde2")
@@ -39,13 +42,13 @@ move_speed = 5.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
 transform = Transform3D(0.0911193, 0, -0.99584, 0, 1, 0, 0.99584, 0, 0.0911193, -0.169409, -0.798712, -1.85146)
+custom_aabb = AABB(-500, -500, -500, 1000, 1000, 1000)
 mesh = SubResource("QuadMesh_jkgj5")
 skeleton = NodePath("../..")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.0530302, -0.746081, 0.663741, -0.0594195, 0.665856, 0.743711, -0.996824, -3.71624e-09, -0.0796422, 3.01466, 1.32626, 0.252999)
 light_energy = 5.419
-shadow_enabled = true
 
 [node name="DemoScene" type="Node" parent="."]
 

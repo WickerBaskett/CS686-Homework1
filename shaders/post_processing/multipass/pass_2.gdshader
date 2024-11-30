@@ -1,6 +1,7 @@
 shader_type canvas_item;
 render_mode unshaded;
 
+uniform sampler2D screen_tex: hint_screen_texture;
 uniform sampler2D last_pass: filter_nearest;
 
 void vertex() {
@@ -8,6 +9,7 @@ void vertex() {
 }
 
 void fragment() {
+	vec4 throwaway = texture(screen_tex, UV);
 	vec4 color = texture(last_pass, UV);
 	color.x += 0.5;
 	COLOR = color;
