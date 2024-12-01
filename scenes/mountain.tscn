@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://f34w2ggnrdr4"]
+[gd_scene load_steps=24 format=3 uid="uid://f34w2ggnrdr4"]
 
 [ext_resource type="Shader" path="res://shaders/terrain_generation/second_terrain.gdshader" id="1_8dbkh"]
 [ext_resource type="Script" path="res://scripts/game_controller.gd" id="1_o1hmm"]
@@ -9,6 +9,7 @@
 [ext_resource type="Shader" path="res://shaders/post_processing/edge_detection.gdshader" id="4_ywllq"]
 [ext_resource type="PackedScene" uid="uid://bh5bhrnhou1cn" path="res://scenes/noise_gen.tscn" id="5_jkxt7"]
 [ext_resource type="Texture2D" uid="uid://cjk683kkt4xqj" path="res://assets/hatching_stroke.png" id="6_qroo5"]
+[ext_resource type="Shader" path="res://shaders/post_processing/posterization.gdshader" id="8_b0cxn"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_xcl6k"]
 viewport_path = NodePath("SubViewport")
@@ -31,6 +32,7 @@ subdivide_depth = 512
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("3_80q1t")
+shader_parameter/color_mode = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_afiol"]
 material = SubResource("ShaderMaterial_c8miw")
@@ -41,6 +43,7 @@ size = Vector2(2, 2)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a7qx5"]
 render_priority = 0
 shader = ExtResource("4_ywllq")
+shader_parameter/color_mode = false
 
 [sub_resource type="QuadMesh" id="QuadMesh_goclb"]
 material = SubResource("ShaderMaterial_a7qx5")
@@ -60,7 +63,30 @@ custom_aabb = AABB(-500, -500, -500, 1000, 1000, 1000)
 flip_faces = true
 size = Vector2(2, 2)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sctoh"]
+render_priority = 0
+shader = ExtResource("8_b0cxn")
+shader_parameter/num_tones = 8
+
+[sub_resource type="QuadMesh" id="QuadMesh_8hltt"]
+material = SubResource("ShaderMaterial_sctoh")
+custom_aabb = AABB(-500, -500, -500, 1000, 1000, 1000)
+flip_faces = true
+size = Vector2(2, 2)
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_wadg8"]
+
+[sub_resource type="GDScript" id="GDScript_apko8"]
+script/source = "extends LineEdit
+
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
 
 [node name="GameController" type="Node3D"]
 script = ExtResource("1_o1hmm")
@@ -91,15 +117,24 @@ unique_name_in_owner = true
 visible = false
 mesh = SubResource("QuadMesh_swnbj")
 
+[node name="Posterization" type="MeshInstance3D" parent="Camera3D"]
+unique_name_in_owner = true
+visible = false
+mesh = SubResource("QuadMesh_8hltt")
+
 [node name="RigidBody3D" type="RigidBody3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
 shape = SubResource("SphereShape3D_wadg8")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.622902, 0.7199, 0.306163, 0.666451, -0.693282, 0.274232, 0.409677, 0.0332224, -0.911625, 0, 7.03142, 0)
+[node name="Lighting" type="Node" parent="."]
 
-[node name="OmniLight3D" parent="." instance=ExtResource("4_pt8eh")]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting"]
+unique_name_in_owner = true
+transform = Transform3D(0.622902, 0.719901, 0.306163, 0.666451, -0.693282, 0.274232, 0.409677, 0.0332228, -0.911625, 0, 7.03142, 0)
+
+[node name="OmniLight3D" parent="Lighting" instance=ExtResource("4_pt8eh")]
+unique_name_in_owner = true
 visible = false
 
 [node name="SubViewport" type="SubViewport" parent="."]
@@ -118,13 +153,13 @@ anchors_preset = -1
 anchor_right = 28.8
 anchor_bottom = 16.2
 offset_bottom = 2.0
-columns = 3
+columns = 2
 
-[node name="OptionButton" type="OptionButton" parent="UI/GridContainer"]
+[node name="SelectedEffect" type="OptionButton" parent="UI/GridContainer"]
 layout_mode = 2
 tooltip_text = "Select a Post-Processing Effect"
 selected = 0
-item_count = 4
+item_count = 5
 popup/item_0/text = "None"
 popup/item_1/text = "Color Edge Detection"
 popup/item_1/id = 1
@@ -132,5 +167,42 @@ popup/item_2/text = "Depth Edge Detection"
 popup/item_2/id = 2
 popup/item_3/text = "Hatching"
 popup/item_3/id = 3
+popup/item_4/text = "Posterization"
+popup/item_4/id = 4
 
-[connection signal="item_selected" from="UI/GridContainer/OptionButton" to="." method="_on_option_button_item_selected"]
+[node name="SwitchLighting" type="Button" parent="UI/GridContainer"]
+layout_mode = 2
+text = "Switch Lighting"
+
+[node name="PosterizationSettings" type="HBoxContainer" parent="UI/GridContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="SubtractTone" type="Button" parent="UI/GridContainer/PosterizationSettings"]
+layout_mode = 2
+text = "-"
+
+[node name="NumTones" type="LineEdit" parent="UI/GridContainer/PosterizationSettings"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "8"
+placeholder_text = "Tones"
+script = SubResource("GDScript_apko8")
+
+[node name="AddTone" type="Button" parent="UI/GridContainer/PosterizationSettings"]
+layout_mode = 2
+text = "+"
+
+[node name="EdgeDetectionColors" type="CheckButton" parent="UI/GridContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Toggle Color Palette"
+
+[connection signal="item_selected" from="UI/GridContainer/SelectedEffect" to="." method="_on_option_button_item_selected"]
+[connection signal="pressed" from="UI/GridContainer/SwitchLighting" to="." method="_on_switch_lighting_pressed"]
+[connection signal="pressed" from="UI/GridContainer/PosterizationSettings/SubtractTone" to="." method="_on_subtract_tone_pressed"]
+[connection signal="text_changed" from="UI/GridContainer/PosterizationSettings/NumTones" to="." method="_on_num_tones_text_changed"]
+[connection signal="pressed" from="UI/GridContainer/PosterizationSettings/AddTone" to="." method="_on_add_tone_pressed"]
+[connection signal="pressed" from="UI/GridContainer/EdgeDetectionColors" to="." method="_on_edge_detection_colors_pressed"]

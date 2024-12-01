@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode unshaded;
 
 uniform sampler2D screen_tex: hint_screen_texture, repeat_disable, filter_nearest;
+uniform bool color_mode = false;
 
 // Definition of Sobel Operators
 const mat3 sv = mat3(vec3(-1, 0, 1),
@@ -39,7 +40,10 @@ void fragment() {
 	else {
 		ALBEDO = texelFetch(screen_tex, ivec2(FRAGCOORD.xy), 0).xyz;
 	}
-	//ALBEDO = vec3(val);
+	
+	if (color_mode) {
+		ALBEDO = vec3(val);
+	}
 }
 
 //void light() {

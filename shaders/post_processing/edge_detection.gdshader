@@ -4,6 +4,7 @@ render_mode unshaded;
 uniform sampler2D screen_tex: hint_screen_texture, repeat_disable, filter_nearest;
 uniform sampler2D depth_tex: hint_depth_texture, repeat_disable, filter_nearest;
 uniform sampler2D normal_tex: hint_normal_roughness_texture, repeat_disable, filter_nearest;
+uniform bool color_mode = false;
 
 // A value of 2 here creates an interesting effect, anything greater makes garbage
 const int offset = 1;
@@ -80,7 +81,10 @@ void fragment() {
 	else {
 		ALBEDO = texelFetch(screen_tex, ivec2(FRAGCOORD.xy), 0).xyz;
 	}
-	//ALBEDO = vec3(d_val + n_val);
+
+	if (color_mode) {
+		ALBEDO = vec3(d_val + n_val);
+	}
 }
 
 //void light() {

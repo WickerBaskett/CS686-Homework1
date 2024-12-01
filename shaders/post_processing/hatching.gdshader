@@ -111,19 +111,15 @@ void fragment() {
 	}
 	else if (adjusted < 1.5) {
 		float tone = min(tonal_map(UV, 64.0, 0.0, 0.5), tonal_map(UV, 32.0, 0.0, 0.5));
-
-
 		ALBEDO = vec3(tone);
 	}
 	else if (adjusted < 2.5) {
 		float tone = min(tonal_map(UV, 16.0, 0.0, 0.5), tonal_map(UV, 32.0, 0.0, 0.5));
-
 		ALBEDO = vec3(tone);
 	}
 	else {
 		ALBEDO = vec3(adjusted);
 	}
-	//ALBEDO = vec3(adjusted / (float(num_tones) - 1.0));
 }
 
 //void light() {

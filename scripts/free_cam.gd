@@ -9,15 +9,16 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _process(delta: float) -> void:
-	# Get horizontal direction of movement and convert to local coords
-	var h_input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var h_dir := (transform.basis * Vector3(h_input_dir.x, 0, h_input_dir.y)).normalized()
-	
-	# Gets vertical direction of movement, left in global coords
-	var v_direction := Input.get_axis("move_down", "move_up")
-	
-	# Adjust the position of the camera based on the input
-	transform.origin += (Vector3(0, v_direction, 0) + h_dir) * delta * move_speed
+	if !paused:
+		# Get horizontal direction of movement and convert to local coords
+		var h_input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+		var h_dir := (transform.basis * Vector3(h_input_dir.x, 0, h_input_dir.y)).normalized()
+		
+		# Gets vertical direction of movement, left in global coords
+		var v_direction := Input.get_axis("move_down", "move_up")
+		
+		# Adjust the position of the camera based on the input
+		transform.origin += (Vector3(0, v_direction, 0) + h_dir) * delta * move_speed
 
 func _input(event: InputEvent) -> void:
 	# Handles looking around with the camera
