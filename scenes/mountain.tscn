@@ -1,10 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://f34w2ggnrdr4"]
+[gd_scene load_steps=20 format=3 uid="uid://f34w2ggnrdr4"]
 
 [ext_resource type="Shader" path="res://shaders/terrain_generation/second_terrain.gdshader" id="1_8dbkh"]
+[ext_resource type="Script" path="res://scripts/game_controller.gd" id="1_o1hmm"]
+[ext_resource type="Shader" path="res://shaders/post_processing/color_edge_detection.gdshader" id="3_80q1t"]
 [ext_resource type="Shader" path="res://shaders/post_processing/hatching.gdshader" id="3_war5u"]
 [ext_resource type="Script" path="res://scripts/free_cam.gd" id="3_y5k6m"]
 [ext_resource type="PackedScene" uid="uid://drn7ouohlx3ib" path="res://scenes/sun.tscn" id="4_pt8eh"]
+[ext_resource type="Shader" path="res://shaders/post_processing/edge_detection.gdshader" id="4_ywllq"]
 [ext_resource type="PackedScene" uid="uid://bh5bhrnhou1cn" path="res://scenes/noise_gen.tscn" id="5_jkxt7"]
+[ext_resource type="Texture2D" uid="uid://cjk683kkt4xqj" path="res://assets/hatching_stroke.png" id="6_qroo5"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_xcl6k"]
 viewport_path = NodePath("SubViewport")
@@ -26,8 +30,7 @@ subdivide_depth = 512
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c8miw"]
 resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("3_war5u")
-shader_parameter/num_tones = 25
+shader = ExtResource("3_80q1t")
 
 [sub_resource type="QuadMesh" id="QuadMesh_afiol"]
 material = SubResource("ShaderMaterial_c8miw")
@@ -35,9 +38,32 @@ custom_aabb = AABB(0, 0, -500, 1000, 1000, 1000)
 flip_faces = true
 size = Vector2(2, 2)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a7qx5"]
+render_priority = 0
+shader = ExtResource("4_ywllq")
+
+[sub_resource type="QuadMesh" id="QuadMesh_goclb"]
+material = SubResource("ShaderMaterial_a7qx5")
+custom_aabb = AABB(-500, -500, -500, 1000, 1000, 1000)
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ybj2v"]
+render_priority = 0
+shader = ExtResource("3_war5u")
+shader_parameter/num_tones = 4
+shader_parameter/hatching_stroke = ExtResource("6_qroo5")
+
+[sub_resource type="QuadMesh" id="QuadMesh_swnbj"]
+material = SubResource("ShaderMaterial_ybj2v")
+custom_aabb = AABB(-500, -500, -500, 1000, 1000, 1000)
+flip_faces = true
+size = Vector2(2, 2)
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_wadg8"]
 
-[node name="Node3D" type="Node3D"]
+[node name="GameController" type="Node3D"]
+script = ExtResource("1_o1hmm")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.330482, 0.24614, 0.159104)
@@ -48,11 +74,22 @@ transform = Transform3D(1, 0, 0, 0, 0.810021, 0.586401, 0, -0.586401, 0.810021, 
 script = ExtResource("3_y5k6m")
 move_speed = 20.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
+[node name="ColorEdgeDetection" type="MeshInstance3D" parent="Camera3D"]
+unique_name_in_owner = true
 transform = Transform3D(0.0911193, 0, -0.99584, 0, 1, 0, 0.99584, 0, 0.0911193, -0.169409, -0.798712, -1.85146)
 visible = false
 mesh = SubResource("QuadMesh_afiol")
 skeleton = NodePath("../..")
+
+[node name="DepthEdgeDetection" type="MeshInstance3D" parent="Camera3D"]
+unique_name_in_owner = true
+visible = false
+mesh = SubResource("QuadMesh_goclb")
+
+[node name="Hatching" type="MeshInstance3D" parent="Camera3D"]
+unique_name_in_owner = true
+visible = false
+mesh = SubResource("QuadMesh_swnbj")
 
 [node name="RigidBody3D" type="RigidBody3D" parent="."]
 
@@ -67,4 +104,33 @@ visible = false
 
 [node name="SubViewport" type="SubViewport" parent="."]
 
-[node name="Node" parent="SubViewport" instance=ExtResource("5_jkxt7")]
+[node name="Noise" parent="SubViewport" instance=ExtResource("5_jkxt7")]
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GridContainer" type="GridContainer" parent="UI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 28.8
+anchor_bottom = 16.2
+offset_bottom = 2.0
+columns = 3
+
+[node name="OptionButton" type="OptionButton" parent="UI/GridContainer"]
+layout_mode = 2
+tooltip_text = "Select a Post-Processing Effect"
+selected = 0
+item_count = 4
+popup/item_0/text = "None"
+popup/item_1/text = "Color Edge Detection"
+popup/item_1/id = 1
+popup/item_2/text = "Depth Edge Detection"
+popup/item_2/id = 2
+popup/item_3/text = "Hatching"
+popup/item_3/id = 3
+
+[connection signal="item_selected" from="UI/GridContainer/OptionButton" to="." method="_on_option_button_item_selected"]
