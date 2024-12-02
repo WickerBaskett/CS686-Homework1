@@ -1,3 +1,5 @@
+// Terrain based off of passed noise textures
+
 shader_type spatial;
 render_mode world_vertex_coords;
 

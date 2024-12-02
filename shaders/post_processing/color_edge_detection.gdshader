@@ -40,7 +40,7 @@ void fragment() {
 	else {
 		ALBEDO = texelFetch(screen_tex, ivec2(FRAGCOORD.xy), 0).xyz;
 	}
-	
+
 	if (color_mode) {
 		ALBEDO = vec3(val);
 	}

@@ -1,10 +1,9 @@
+// Terrain based off of a single noise texture
+
 shader_type spatial;
 render_mode world_vertex_coords;
 
 uniform sampler2D noise: filter_nearest, repeat_disable;
-
-// Offset of points used to calculate the Normal Vector
-const float pos_offset = 0.00001;
 
 float get_height(vec2 pos) {
 	return texture(noise, pos).x * 3.0;

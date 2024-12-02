@@ -1,7 +1,7 @@
 [gd_scene load_steps=24 format=3 uid="uid://f34w2ggnrdr4"]
 
-[ext_resource type="Shader" path="res://shaders/terrain_generation/second_terrain.gdshader" id="1_8dbkh"]
 [ext_resource type="Script" path="res://scripts/game_controller.gd" id="1_o1hmm"]
+[ext_resource type="Shader" path="res://shaders/terrain_generation/global_position_terrain.gdshader" id="2_3rusk"]
 [ext_resource type="Shader" path="res://shaders/post_processing/color_edge_detection.gdshader" id="3_80q1t"]
 [ext_resource type="Shader" path="res://shaders/post_processing/hatching.gdshader" id="3_war5u"]
 [ext_resource type="Script" path="res://scripts/free_cam.gd" id="3_y5k6m"]
@@ -11,22 +11,32 @@
 [ext_resource type="Texture2D" uid="uid://cjk683kkt4xqj" path="res://assets/hatching_stroke.png" id="6_qroo5"]
 [ext_resource type="Shader" path="res://shaders/post_processing/posterization.gdshader" id="8_b0cxn"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_xcl6k"]
-viewport_path = NodePath("SubViewport")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sft1i"]
 resource_local_to_scene = true
 render_priority = 0
-shader = ExtResource("1_8dbkh")
-shader_parameter/noise = SubResource("ViewportTexture_xcl6k")
+shader = ExtResource("2_3rusk")
+shader_parameter/subdivide_ratio = 16.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_2tsj7"]
 resource_local_to_scene = true
 material = SubResource("ShaderMaterial_sft1i")
 custom_aabb = AABB(-50, -50, -50, 100, 100, 100)
 size = Vector2(16, 16)
-subdivide_width = 512
-subdivide_depth = 512
+subdivide_width = 254
+subdivide_depth = 254
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mb1tp"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_3rusk")
+shader_parameter/subdivide_ratio = 8.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tdkmq"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_mb1tp")
+size = Vector2(32, 32)
+subdivide_width = 254
+subdivide_depth = 254
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c8miw"]
 resource_local_to_scene = true
@@ -74,8 +84,6 @@ custom_aabb = AABB(-500, -500, -500, 1000, 1000, 1000)
 flip_faces = true
 size = Vector2(2, 2)
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_wadg8"]
-
 [sub_resource type="GDScript" id="GDScript_apko8"]
 script/source = "extends LineEdit
 
@@ -91,9 +99,15 @@ func _process(delta: float) -> void:
 [node name="GameController" type="Node3D"]
 script = ExtResource("1_o1hmm")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="Terrain" type="Node" parent="."]
+
+[node name="ClipMap0" type="MeshInstance3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.330482, 0.24614, 0.159104)
 mesh = SubResource("PlaneMesh_2tsj7")
+skeleton = NodePath("../..")
+
+[node name="ClipMap1" type="MeshInstance3D" parent="Terrain"]
+mesh = SubResource("PlaneMesh_tdkmq")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.810021, 0.586401, 0, -0.586401, 0.810021, 0.130093, 10.6283, 9.80425)
@@ -121,11 +135,6 @@ mesh = SubResource("QuadMesh_swnbj")
 unique_name_in_owner = true
 visible = false
 mesh = SubResource("QuadMesh_8hltt")
-
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-shape = SubResource("SphereShape3D_wadg8")
 
 [node name="Lighting" type="Node" parent="."]
 
