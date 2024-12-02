@@ -1,12 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://dtig42sxgmhd"]
+[gd_scene load_steps=12 format=3 uid="uid://dtig42sxgmhd"]
 
 [ext_resource type="Script" path="res://scripts/free_cam.gd" id="1_pcxqr"]
-[ext_resource type="Shader" path="res://shaders/post_processing/posterization.gdshader" id="2_i1j6y"]
+[ext_resource type="Shader" path="res://shaders/post_processing/hatching.gdshader" id="2_1erct"]
+[ext_resource type="Texture2D" uid="uid://cjk683kkt4xqj" path="res://assets/hatching_stroke.png" id="3_cnw4v"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vwstu"]
 render_priority = 0
-shader = ExtResource("2_i1j6y")
-shader_parameter/num_tones = 3
+shader = ExtResource("2_1erct")
+shader_parameter/hatching_stroke = ExtResource("3_cnw4v")
 
 [sub_resource type="QuadMesh" id="QuadMesh_jkgj5"]
 material = SubResource("ShaderMaterial_vwstu")

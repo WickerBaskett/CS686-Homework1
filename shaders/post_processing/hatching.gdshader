@@ -4,7 +4,7 @@ render_mode unshaded;
 uniform sampler2D screen_tex : hint_screen_texture, filter_nearest, repeat_disable;
 uniform sampler2D hatching_stroke: filter_nearest, repeat_disable;
 
-uniform int num_tones = 4;
+const int num_tones = 5;
 
 // Taken from the internet, not an Elliott Original
 float white_noise(vec2 pos) {
@@ -99,7 +99,10 @@ void fragment() {
 	// Grayscale conversion
 	float luminence = ((color.r * 0.3) + (color.g * 0.59) + (color.b * 0.11)) * (float(num_tones));
 	float adjusted = floor(luminence);
-	if (adjusted < 0.25) {
+	if (adjusted < 0.01) {
+		ALBEDO = vec3(0.0, 0.0, 0.0);
+	}
+	else if (adjusted < 2.0) {
 		float horizontal = min(tonal_map(UV, 16.0, 0.0, 0.5), tonal_map(UV, 32.0, 0.0, 0.5));
 		horizontal = min(horizontal, tonal_map(UV, 64.0, 0.0, 0.5));
 
@@ -109,12 +112,8 @@ void fragment() {
 		float tone = min(vertical, horizontal);
 		ALBEDO = vec3(tone);
 	}
-	else if (adjusted < 1.5) {
+	else if (adjusted < 3.0) {
 		float tone = min(tonal_map(UV, 64.0, 0.0, 0.5), tonal_map(UV, 32.0, 0.0, 0.5));
-		ALBEDO = vec3(tone);
-	}
-	else if (adjusted < 2.5) {
-		float tone = min(tonal_map(UV, 16.0, 0.0, 0.5), tonal_map(UV, 32.0, 0.0, 0.5));
 		ALBEDO = vec3(tone);
 	}
 	else {

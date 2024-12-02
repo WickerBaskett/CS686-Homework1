@@ -65,7 +65,7 @@ vec3 fbm(vec2 x, float H )
 void vertex() {
 	vec4 global_pos = MODEL_MATRIX * vec4(VERTEX.xyz, 1.0);
 	// Set the current positions height
-	noise = fbm(global_pos.xz / subdivide_ratio, 0.5);
+	noise = fbm(global_pos.xz / 32.0, 0.5);
 	VERTEX.y = noise.x * 3.0;
 }
 

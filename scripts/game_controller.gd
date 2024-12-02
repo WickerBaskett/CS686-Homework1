@@ -6,6 +6,7 @@ extends Node3D
 @onready var num_tones: LineEdit = %NumTones
 @onready var edge_detection_colors: CheckButton = %EdgeDetectionColors
 @onready var effects: Array = [%ColorEdgeDetection, %DepthEdgeDetection, %Hatching, %Posterization]
+@onready var terrain: Array = [%GlobalPosition, %CustomValueTexture, %FastNoiseLite]
 
 var active_effect: MeshInstance3D
 var current_edge_detection_color: bool = false
@@ -31,6 +32,15 @@ func _on_option_button_item_selected(index: int) -> void:
 	elif index == 1 or index == 2: # Edge Detection Settings
 		edge_detection_colors.visible = true
 		edge_detection_colors.button_pressed = false
+
+###########################
+# Change Selected Terrain #
+###########################
+func _on_terrain_selection_item_selected(index: int) -> void:
+	for option in terrain:
+		option.visible = false
+
+	terrain[index].visible = true
 
 ###################
 # Change Lighting #

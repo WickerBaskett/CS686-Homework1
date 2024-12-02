@@ -3,11 +3,9 @@
 shader_type spatial;
 render_mode world_vertex_coords;
 
-uniform sampler2D noise1;
-uniform sampler2D noise2;
-uniform sampler2D noise3;
-
-uniform int num_tones = 5;
+uniform sampler2D noise1: filter_nearest, repeat_disable;
+uniform sampler2D noise2: filter_nearest, repeat_disable;
+uniform sampler2D noise3: filter_nearest, repeat_disable;
 
 // Offset of points used to calculate the Normal Vector
 const float pos_offset = 0.00001;
@@ -47,12 +45,6 @@ void fragment() {
 	// Write to the normal map, which uses a reasonable coordinate system
 	//  (tangent space, which is lined up with world XYZ)
 	NORMAL_MAP = 0.5 + 0.5 * normalize(normal);
-
-	//--------------------
-	// Set Albedo
-	//--------------------
-
-
 }
 
 //void light() {
